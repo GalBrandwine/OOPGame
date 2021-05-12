@@ -1,16 +1,15 @@
-#pragma warning (disable : 4996)
+#pragma warning(disable : 4996)
 #include "CReader.h"
-
 
 CReader::CReader()
 {
 }
 
-int CReader::ReadUnit(const char* fileName, list<list<int>*>* units)
+int CReader::ReadUnit(const char *fileName, list<list<int> *> *units)
 {
-	FILE* pFile;
+	FILE *pFile;
 	char tempStr[2000];
-	char* temp;
+	char *temp;
 
 	pFile = OpenFile(fileName);
 
@@ -23,14 +22,15 @@ int CReader::ReadUnit(const char* fileName, list<list<int>*>* units)
 	{
 		if (tempStr[0] != '#' && tempStr[0] != '\0' && tempStr[0] != '\n')
 		{
-			list<int>* unit = new list<int>();
+			auto s = convertToString(tempStr, 2000);
+			list<int> *unit = new list<int>();
 
 			temp = strtok(tempStr, ",:");
 			while (temp != NULL)
 			{
 				int attribute = atoi(temp);
 				unit->push_back(attribute),
-				temp = strtok(NULL, ",:");
+					temp = strtok(NULL, ",:");
 			}
 
 			units->push_back(unit);
@@ -42,11 +42,11 @@ int CReader::ReadUnit(const char* fileName, list<list<int>*>* units)
 	return 1;
 }
 
-int CReader::ReadUnitProperties(const char* fileName, list<list<int>*>* properties)
+int CReader::ReadUnitProperties(const char *fileName, list<list<int> *> *properties)
 {
-	FILE* pFile;
+	FILE *pFile;
 	char tempStr[2000];
-	char* temp;
+	char *temp;
 
 	pFile = OpenFile(fileName);
 
@@ -59,7 +59,7 @@ int CReader::ReadUnitProperties(const char* fileName, list<list<int>*>* properti
 	{
 		if (tempStr[0] != '#' && tempStr[0] != '\0' && tempStr[0] != '\n')
 		{
-			list<int>* property = new list<int>();
+			list<int> *property = new list<int>();
 
 			temp = strtok(tempStr, ",");
 			while (temp != NULL)
@@ -78,13 +78,12 @@ int CReader::ReadUnitProperties(const char* fileName, list<list<int>*>* properti
 	return 1;
 }
 
-
-FILE* CReader::OpenFile(const char* fileName)
+FILE *CReader::OpenFile(const char *fileName)
 {
-	FILE* pFile = fopen(fileName, "r");
+	FILE *pFile = fopen(fileName, "r");
 	if (pFile == NULL)
 	{
-		cout << "File Openning Failed!" << endl;
+		cout << "File Opening Failed!" << endl;
 		return nullptr;
 	}
 

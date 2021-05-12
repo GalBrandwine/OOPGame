@@ -2,12 +2,16 @@
 #include <iostream>
 #include <map>
 
-#include "CDefenceUnit.h"
-#include "COffenceUnit.h"
+#include "utils/CConstants.h"
+#include "CDefenceUnit.hpp"
+#include "COffenceUnit.hpp"
 #include "CReader.h"
-#include "CUnitProperty.h"
+#include "CUnitProperty.hpp"
 
-using namespace std;
+/**
+ * @brief I dont like using STD namespace
+ * using namespace std;
+ */
 
 class CGameAdmin
 {
@@ -22,24 +26,28 @@ public:
 	int Play();
 
 private:
-
-	/**
-	 * @brief I prefere smart pointers.
-	 * They much measier to handle, and have almost to nothing CPU overhead.
-	 * 
-	 * int LoadUnitProperties(list <list<int>*>* properties);
-	 * int LoadOffenceUnits(list <list<int>*>* units);
-	 * int LoadDefenceUnits(list <list<int>*>* units);
-	 */
 	int LoadUnitProperties(list<list<int> *> *properties);
 	int LoadOffenceUnits(list<list<int> *> *units);
 	int LoadDefenceUnits(list<list<int> *> *units);
+
+	/**
+	 * @brief The game ends when there are no Offense units.
+	 * 
+	 * @note This termination term is unfair. What will happen when there are no more Defence units? the game will continue forever?
+	 * 
+	 * **Addition**
+	 * * Possible return values:
+	 *   * 1 - No more Offence units - Hence Defence won.
+	 *   * 2 - No more Defence units - Hence Offence won.
+	 *   * 99 - Un expected game ending - this should be catched and logged.
+	 * @return int
+	 */
 	int IsGameOver();
 
 private:
 	CReader *m_reader = nullptr;
 
 	map<int, CUnitProperty *> *m_unitProperties = nullptr;
-	list<COffenceUnit *> *m_attack = nullptr;
-	list<CDefenceUnit *> *m_defence = nullptr;
+	list<IUnit *> *m_attack = nullptr;
+	list<IUnit *> *m_defence = nullptr;
 };

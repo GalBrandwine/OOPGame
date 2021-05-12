@@ -3,15 +3,14 @@
 
 #include "CGameAdmin.h"
 
-
 CGameAdmin::CGameAdmin()
 {
 	m_reader = new CReader();
-	
-	m_unitProperties = new map<int, CUnitProperty*>();
 
-	m_defence = new list<CDefenceUnit*>();
-	m_attack = new list<COffenceUnit*>();
+	m_unitProperties = new map<int, CUnitProperty *>();
+
+	m_defence = new list<IUnit *>();
+	m_attack = new list<IUnit *>();
 }
 
 CGameAdmin::~CGameAdmin()
@@ -29,23 +28,23 @@ int CGameAdmin::LoadGameConfigurations()
 {
 	bool rc = true;
 
-	list<list<int>*>* properties = new list<list<int>*>();
-	list<list<int>*>* attackUnits = new list<list<int>*>();
-	list<list<int>*>* defendUnits = new list<list<int>*>();
+	list<list<int> *> *properties = new list<list<int> *>();
+	list<list<int> *> *attackUnits = new list<list<int> *>();
+	list<list<int> *> *defendUnits = new list<list<int> *>();
 
-	if (m_reader->ReadUnitProperties(".\\Resources\\UnitsProperties.txt", properties) == 0 ||
-		m_reader->ReadUnit(".\\Resources\\Attack.txt", attackUnits) == 0 ||
-		m_reader->ReadUnit(".\\Resources\\Defence.txt", defendUnits) == 0)
+	if (m_reader->ReadUnitProperties("/home/gal/dev/Game/conf/Resources/UnitsProperties.txt", properties) == 0 ||
+		m_reader->ReadUnit("/home/gal/dev/Game/conf/Resources/Attack.txt", attackUnits) == 0 ||
+		m_reader->ReadUnit("/home/gal/dev/Game/conf/Resources/Defence.txt", defendUnits) == 0)
 	{
 		rc = false;
 	}
 
 	cout << "---START LOAD UNITS---" << endl;
-	
+
 	LoadUnitProperties(properties);
 	LoadOffenceUnits(attackUnits);
 	LoadDefenceUnits(defendUnits);
-	
+
 	cout << "---STOP LOAD UNITS---" << endl;
 
 	delete properties;
@@ -58,7 +57,7 @@ int CGameAdmin::LoadGameConfigurations()
 int CGameAdmin::PlaceOnMap()
 {
 	//TODO. Add your code here.
-
+	
 	return 1;
 }
 
@@ -86,7 +85,7 @@ int CGameAdmin::Play()
 #pragma endregion public_functions
 
 #pragma region private_functions
-int CGameAdmin::LoadUnitProperties(list<list<int>*>* properties)
+int CGameAdmin::LoadUnitProperties(list<list<int> *> *properties)
 {
 	if (properties->size() == 0)
 	{
@@ -95,7 +94,7 @@ int CGameAdmin::LoadUnitProperties(list<list<int>*>* properties)
 
 	while (properties->size() > 0)
 	{
-		list<int>* unitProperties = properties->front();
+		list<int> *unitProperties = properties->front();
 		properties->pop_front();
 
 		int unit_type = unitProperties->front();
@@ -115,12 +114,16 @@ int CGameAdmin::LoadUnitProperties(list<list<int>*>* properties)
 		unitProperties->pop_front();
 
 		cout << "unit type = " << unit_type;
+		auto convertedUnitType = static_cast<UnitTypes::UnitTypes>(unit_type);
+		cout << " unit type name = " << UnitTypes::to_string(convertedUnitType);
+
 		cout << " speed = " << speed;
 		cout << " range = " << range;
 		cout << " success probability = " << probability << endl;
+		cout << "\n";
 
-		CUnitProperty* up = new CUnitProperty(speed, range, probability);
-		m_unitProperties->insert(make_pair(unit_type, up));
+		CUnitProperty *up = new CUnitProperty(speed, range, probability);
+		m_unitProperties->insert(std::make_pair(unit_type, up));
 
 		delete unitProperties;
 	}
@@ -128,7 +131,7 @@ int CGameAdmin::LoadUnitProperties(list<list<int>*>* properties)
 	return 1;
 }
 
-int CGameAdmin::LoadOffenceUnits(list <list<int>*>* units)
+int CGameAdmin::LoadOffenceUnits(list<list<int> *> *units)
 {
 	if (units->size() == 0)
 	{
@@ -137,7 +140,7 @@ int CGameAdmin::LoadOffenceUnits(list <list<int>*>* units)
 
 	while (units->size() > 0)
 	{
-		list<int>* unit = units->front();
+		list<int> *unit = units->front();
 		units->pop_front();
 
 		int unitType = unit->front();
@@ -166,7 +169,13 @@ int CGameAdmin::LoadOffenceUnits(list <list<int>*>* units)
 		cout << " tar loc y = " << tarLocY << endl;
 
 		//TODO. Add your code here
-		m_attack->push_back(unit);
+		CLocation start{startLocX, startLocY};
+		CLocation target{tarLocX, tarLocY};
+		auto convertedUnitType = static_cast<UnitTypes::UnitTypes>(unitType);
+		cout << " unit type name = " << UnitTypes::to_string(convertedUnitType);
+		cout << "\n";
+		IUnit *offence = new COffenceUnit(convertedUnitType, id, start, target);
+		m_attack->push_back(offence);
 
 		delete unit;
 	}
@@ -174,7 +183,7 @@ int CGameAdmin::LoadOffenceUnits(list <list<int>*>* units)
 	return 1;
 }
 
-int CGameAdmin::LoadDefenceUnits(list <list<int>*>* units)
+int CGameAdmin::LoadDefenceUnits(list<list<int> *> *units)
 {
 	if (units->size() == 0)
 	{
@@ -183,7 +192,7 @@ int CGameAdmin::LoadDefenceUnits(list <list<int>*>* units)
 
 	while (units->size() > 0)
 	{
-		list<int>* unit = units->front();
+		list<int> *unit = units->front();
 		units->pop_front();
 
 		int unitType = unit->front();
@@ -204,7 +213,13 @@ int CGameAdmin::LoadDefenceUnits(list <list<int>*>* units)
 		cout << " start loc y = " << startLocY << endl;
 
 		//TODO. Add your code here
-		m_defence->push_back(unit);
+		CLocation start{startLocX, startLocY};
+		/** @todo Add safety checks here. */
+		auto convertedUnitType = static_cast<UnitTypes::UnitTypes>(unitType);
+		cout << " unit type name = " << UnitTypes::to_string(convertedUnitType);
+		cout << "\n";
+		IUnit *defence = new CDefenceUnit(convertedUnitType, id, start);
+		m_defence->push_back(defence);
 
 		delete unit;
 	}
@@ -214,8 +229,15 @@ int CGameAdmin::LoadDefenceUnits(list <list<int>*>* units)
 
 int CGameAdmin::IsGameOver()
 {
-	//TODO. Add your code here
+	if (m_attack->size() == 0)
+	{
+		return 1;
+	}
+	else if (m_defence->size() == 0)
+	{
+		return 2;
+	}
 
-	return 1;
+	return 99;
 }
 #pragma endregion public_functions

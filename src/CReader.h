@@ -2,7 +2,10 @@
 #include <iostream>
 #include <cstdio>
 #include <list>
+#include <vector>
 #include <stdio.h>
+#include "utils/utils.h"
+#include <string.h>
 
 using namespace std;
 

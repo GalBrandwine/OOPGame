@@ -1,3 +1,5 @@
 .vscode/
 log/
 build/
+docs/doxygen/html
+docs/doxygen/latex
