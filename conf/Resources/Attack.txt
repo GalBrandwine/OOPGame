@@ -1,0 +1,9 @@
+#line that starts with # should be ignored
+#1 - airplane, unique id = 1111, start location = x:10 / y:15, target location = x:50 / y:86.
+1,1111,10:15,50:86
+#1 - airplane, unique id = 1112, start location = x:90 / y:25, target location = x:50 / y:86.
+1,1112,90:25,50:86
+#2 - tank, unique id = 2111, start location = x:50 / y:30, target location = x:62 / y:80.
+2,2111,50:30,62:80
+#3 - ship, unique id = 3111, start location = x:40 / y:75, target location = x:70 / y:70.
+3,3111,40:75,70:70

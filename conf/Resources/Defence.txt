@@ -1,0 +1,9 @@
+#line that starts with # should be ignored
+#11 - anti air, unique id = 4111, static location = x:62 / y:80
+11,4111,62:80
+#12 - anti tank, unique id = 5111, static location = x:35 / y:60
+12,5111,35:60
+#13 - anti boat, unique id = 6111, static location = x:70 / y:70
+13,6111,70:70
+#99 - building, unique id = 9911, static location = x:50 / y:86
+99,9911,50:86
