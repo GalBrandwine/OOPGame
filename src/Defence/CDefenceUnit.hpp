@@ -1,10 +1,11 @@
 #pragma once
 #include "IUnit.hpp"
+#include "IUnitMap.hpp"
 #include "utils/utils.h"
 #include "utils/CLocation.h"
 #include "utils/CConstants.h"
 
-class CDefenceUnit : public IUnit
+class CDefenceUnit : public IUnit, public IUnitMap
 {
 private:
     int m_id;
@@ -12,6 +13,10 @@ private:
     CLocation m_startLocation;
 
 public:
+    UnitTypes::UnitTypes GetType() const override;
+    int GetId() const override;
+    const CLocation &GetStartLocation() override;
+
     /**
      * @brief Performs a turn given set of properties.
      * 

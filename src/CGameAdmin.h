@@ -7,7 +7,7 @@
 #include "COffenceUnit.hpp"
 #include "CReader.h"
 #include "CUnitProperty.hpp"
-
+#include "Map.hpp"
 /**
  * @brief I dont like using STD namespace
  * using namespace std;
@@ -21,7 +21,11 @@ public:
 
 public:
 	int LoadGameConfigurations();
-
+	/**
+	 * @brief Place pawns and building on map given loaded presettings.
+	 * 
+	 * @return int 
+	 */
 	int PlaceOnMap();
 	int Play();
 

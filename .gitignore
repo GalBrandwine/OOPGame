@@ -3,3 +3,6 @@ log/
 build/
 docs/doxygen/html
 docs/doxygen/latex
+docs/CMakeFiles/
+
+docs/Makefile

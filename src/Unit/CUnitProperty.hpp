@@ -5,12 +5,32 @@
 
 class CUnitProperty
 {
-protected:
-    int Range;
-    int Speed = DEFAULT_SPEED;
-    int Probability;
+private:
+    int m_hitRange;
+    int m_speed = DEFAULT_SPEED;
+    int m_hitProbability = 0;
 
 public:
+    /**
+     * @brief Get the Speed object
+     * 
+     * @return const int 
+     */
+    const int GetSpeed() const;
+
+    /**
+     * @brief Get the Hit Range object
+     * 
+     * @return const int 
+     */
+    const int GetHitRange() const;
+    
+    /**
+     * @brief Get the Probability object
+     * 
+     * @return const int 
+     */
+    const int GetProbability() const;
     /**
      * @brief Construct a new CUnitProperty object
      * 

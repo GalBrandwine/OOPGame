@@ -6,7 +6,7 @@ public:
 
 	int GetSpeed()
 	{
-		return Speed;
+		return m_speed;
 	}
 
 	int GetHitRange()
@@ -20,7 +20,7 @@ public:
 	}
 
 private:
-	int Speed = 0;
+	int m_speed = 0;
 	int m_hitRange = 0;
 	int m_hitProbability = 0;
 };

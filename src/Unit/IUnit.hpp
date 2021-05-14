@@ -1,7 +1,6 @@
 #pragma once
 #include <map>
 #include "CUnitProperty.hpp"
-
 /**
  * @brief IUnit holds the PerformTurn interface that each Unit have to implement.
  * 
@@ -14,6 +13,6 @@ public:
      * 
      * @param properties 
      */
-    virtual void PerformTurn(std::map<int, CUnitProperty *> *properties){};
-    ~IUnit(){};
+    virtual void PerformTurn(std::map<int, CUnitProperty *> *properties) = 0;
+    virtual ~IUnit(){};
 };

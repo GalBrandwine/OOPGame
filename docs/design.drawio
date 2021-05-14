@@ -19,39 +19,79 @@
                 <mxCell id="5" value="COffenceUnit" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="420" y="320" width="120" height="60" as="geometry"/>
                 </mxCell>
+                <mxCell id="7" value="CDefenceUnit" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="170" width="120" height="60" as="geometry"/>
+                </mxCell>
             </root>
         </mxGraphModel>
     </diagram>
     <diagram id="SvnfWpvC0kF18BgabGx2" name="Map associations">
+        &#xa;
         <mxGraphModel dx="960" dy="378" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            &#xa;
             <root>
+                &#xa;
                 <mxCell id="xne5KIhk7Wmau1sAaLwL-0"/>
+                &#xa;
                 <mxCell id="xne5KIhk7Wmau1sAaLwL-1" parent="xne5KIhk7Wmau1sAaLwL-0"/>
+                &#xa;
                 <mxCell id="WG1-tW09fJgpcqXLr-7a-4" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="xne5KIhk7Wmau1sAaLwL-1" source="WG1-tW09fJgpcqXLr-7a-0" target="WG1-tW09fJgpcqXLr-7a-2">
+                    &#xa;
                     <mxGeometry relative="1" as="geometry"/>
+                    &#xa;
                 </mxCell>
+                &#xa;
                 <mxCell id="WG1-tW09fJgpcqXLr-7a-0" value="CDefenceUnit" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="xne5KIhk7Wmau1sAaLwL-1">
+                    &#xa;
                     <mxGeometry x="230" y="320" width="120" height="60" as="geometry"/>
+                    &#xa;
                 </mxCell>
+                &#xa;
                 <mxCell id="WG1-tW09fJgpcqXLr-7a-5" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="xne5KIhk7Wmau1sAaLwL-1" source="WG1-tW09fJgpcqXLr-7a-1" target="WG1-tW09fJgpcqXLr-7a-2">
+                    &#xa;
                     <mxGeometry relative="1" as="geometry"/>
+                    &#xa;
                 </mxCell>
+                &#xa;
                 <mxCell id="WG1-tW09fJgpcqXLr-7a-1" value="COffenceUnit" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="xne5KIhk7Wmau1sAaLwL-1">
+                    &#xa;
                     <mxGeometry x="485" y="320" width="120" height="60" as="geometry"/>
+                    &#xa;
                 </mxCell>
+                &#xa;
                 <mxCell id="WG1-tW09fJgpcqXLr-7a-2" value="Map" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6a00ff;strokeColor=#3700CC;fontColor=#ffffff;" vertex="1" parent="xne5KIhk7Wmau1sAaLwL-1">
+                    &#xa;
                     <mxGeometry x="365" y="180" width="120" height="60" as="geometry"/>
+                    &#xa;
                 </mxCell>
+                &#xa;
                 <mxCell id="WG1-tW09fJgpcqXLr-7a-3" value="Game" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="xne5KIhk7Wmau1sAaLwL-1">
+                    &#xa;
                     <mxGeometry x="160" y="70" width="120" height="60" as="geometry"/>
+                    &#xa;
                 </mxCell>
+                &#xa;
                 <mxCell id="WG1-tW09fJgpcqXLr-7a-6" value="Uses" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;" vertex="1" parent="xne5KIhk7Wmau1sAaLwL-1">
+                    &#xa;
                     <mxGeometry x="480" y="260" width="40" height="20" as="geometry"/>
+                    &#xa;
                 </mxCell>
+                &#xa;
                 <mxCell id="WG1-tW09fJgpcqXLr-7a-7" value="Uses" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;" vertex="1" parent="xne5KIhk7Wmau1sAaLwL-1">
+                    &#xa;
                     <mxGeometry x="325" y="270" width="40" height="20" as="geometry"/>
+                    &#xa;
                 </mxCell>
+                &#xa;
+                <mxCell id="PjZUNyj_hu1lZYriWsWw-0" value="&lt;div style=&quot;text-align: left&quot;&gt;&lt;span&gt;Map is shared between Offence and Defence.&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left&quot;&gt;&lt;span&gt;Also Ofence and Defence are being injected to map for Game map initiation.&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left&quot;&gt;&lt;span&gt;Map will provide is_in_line_of_sight&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;" vertex="1" parent="xne5KIhk7Wmau1sAaLwL-1">
+                    &#xa;
+                    <mxGeometry x="360" y="85" width="420" height="50" as="geometry"/>
+                    &#xa;
+                </mxCell>
+                &#xa;
             </root>
+            &#xa;
         </mxGraphModel>
+        &#xa;
     </diagram>
 </mxfile>

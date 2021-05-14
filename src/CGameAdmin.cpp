@@ -56,8 +56,30 @@ int CGameAdmin::LoadGameConfigurations()
 
 int CGameAdmin::PlaceOnMap()
 {
-	//TODO. Add your code here.
-	
+	std::list<IUnitMap *> map_pawns;
+
+	/** @todo Add unittest for this case */
+	if (m_attack->size() == 0 or m_defence->size())
+	{
+		std::cerr << " Cant place on map. Missing pawns \n";
+		return 0;
+	}
+
+	for (const auto &offence : *m_attack)
+	{
+		auto casted = dynamic_cast<IUnitMap *>(offence);
+		map_pawns.push_back(casted);
+	}
+
+	for (const auto &defence : *m_defence)
+	{
+		auto casted = dynamic_cast<IUnitMap *>(defence);
+		map_pawns.push_back(casted);
+	}
+
+	std::shared_ptr<IMap> shared_map = std::make_shared<Map>(map_pawns);
+	/** @todo Inject map to Offence and Defense HERE*/
+
 	return 1;
 }
 

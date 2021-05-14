@@ -4,7 +4,7 @@ class CLocation
 public:
 	CLocation(int x, int y);
 
-	int X()
+	int X() const
 	{ 
 		return m_locationX; 
 	}
@@ -14,7 +14,7 @@ public:
 		m_locationX = val;
 	}
 
-	int Y()
+	int Y() const 
 	{
 		return m_locationY;
 	}
