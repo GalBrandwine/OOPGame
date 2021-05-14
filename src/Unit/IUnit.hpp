@@ -1,6 +1,8 @@
 #pragma once
+#include <memory>
 #include <map>
 #include "CUnitProperty.hpp"
+#include "IMap.hpp"
 /**
  * @brief IUnit holds the PerformTurn interface that each Unit have to implement.
  * 
@@ -8,6 +10,7 @@
 class IUnit
 {
 public:
+    virtual void LoadMap(std::shared_ptr<IMap> map) = 0;
     /**
      * @brief Performs a turn under Derived class rules.
      * 

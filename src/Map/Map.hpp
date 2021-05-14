@@ -6,16 +6,25 @@
  * @brief The battlefield takes place on a 100x100 size area (two-dimensional grid).
  * 
  */
+
 #define MAP_SIZE 100
+
 class Map : public IMap
 {
 private:
     cv::Mat m_map;
-    
-
     cv::Mat m_debug_map;
 
 public:
+    /**
+     * @brief Find neighboors
+     * 
+     * @param range 
+     * @param my_location 
+     * @param neighbors 
+     */
+    const void FindNeighborsInRange(const int range, const CLocation &my_location, std::vector<std::shared_ptr<IUnitMap>> &neighbors) const override;
+
     /**
      * @brief Construct a new Map object
      * 
@@ -31,4 +40,8 @@ public:
      */
     Map(std::list<IUnitMap *> &pawns);
     ~Map();
+
+#ifdef ShowDebugMap
+    const void ShowMap() const override;
+#endif
 };

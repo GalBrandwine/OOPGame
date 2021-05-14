@@ -31,3 +31,12 @@ CUnitProperty::CUnitProperty(int range, int probability)
 CUnitProperty::~CUnitProperty()
 {
 }
+
+std::ostream &operator<<(std::ostream &o, CUnitProperty const &unitP)
+{
+    return o << "Hit range: " << unitP.m_hitRange
+             << "\n"
+             << "Speed: " << unitP.m_speed
+             << "\n"
+             << "Hit probability: " << unitP.m_hitProbability;
+}

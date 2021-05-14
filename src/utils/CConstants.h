@@ -10,7 +10,7 @@ namespace UnitTypes
 		AntiAir = 11,
 		AntiTank = 12,
 		// AntiBoat = 13,
-		AntiShip = 13, ///<  @brief According to the user-story.
+		AntiShip = 13, /** @brief According to the user-story.*/
 		Building = 99
 	};
 

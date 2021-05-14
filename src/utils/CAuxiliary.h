@@ -1,6 +1,11 @@
 #pragma once
 #include "CLocation.h"
 
+/**
+ * @brief Im not sure what this CAuxiliary creature is.
+ * * *It looks like a singeltone, that acts like a factory. But why?*
+ * 
+ */
 class CAuxiliary
 {
 public:

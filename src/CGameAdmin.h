@@ -2,6 +2,7 @@
 #include <iostream>
 #include <map>
 
+#include "utils/CAuxiliary.h"
 #include "utils/CConstants.h"
 #include "CDefenceUnit.hpp"
 #include "COffenceUnit.hpp"
@@ -50,7 +51,7 @@ private:
 
 private:
 	CReader *m_reader = nullptr;
-
+	CAuxiliary *m_aux;
 	map<int, CUnitProperty *> *m_unitProperties = nullptr;
 	list<IUnit *> *m_attack = nullptr;
 	list<IUnit *> *m_defence = nullptr;

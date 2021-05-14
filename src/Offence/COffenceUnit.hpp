@@ -4,15 +4,20 @@
 #include "utils/utils.h"
 #include "utils/CLocation.h"
 #include "utils/CConstants.h"
+#include "utils/CAuxiliary.h"
+
 class COffenceUnit : public IUnit, public IUnitMap
 {
 private:
+    std::shared_ptr<IMap> m_map;
     UnitTypes::UnitTypes m_unitType;
     int m_id;
     CLocation m_startLocation;
     CLocation m_targetLocation;
+    CAuxiliary *m_aux;
 
 public:
+    void LoadMap(std::shared_ptr<IMap> map) override;
     UnitTypes::UnitTypes GetType() const override;
     int GetId() const override;
     const CLocation &GetStartLocation() override;
@@ -30,13 +35,14 @@ public:
     void PerformTurn(std::map<int, CUnitProperty *> *properties) override;
 
     /**
-     * @brief Construct a new COffenceUnit object
+     * @brief Construct a new COffenceUnit::COffenceUnit object
      * 
      * @param unitType 
      * @param id 
-     * @param startLocation 
-     * @param targetLOcation 
+     * @param start 
+     * @param target 
+     * @param aux_ptr 
      */
-    COffenceUnit(UnitTypes::UnitTypes unitType, int id, CLocation startLocation, CLocation targetLOcation);
+    COffenceUnit(UnitTypes::UnitTypes unitType, int id, CLocation start, CLocation target, CAuxiliary *aux_ptr);
     ~COffenceUnit();
 };

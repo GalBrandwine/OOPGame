@@ -12,6 +12,14 @@ private:
 
 public:
     /**
+     * @brief This friend will print UnitProperty
+     * 
+     * @param o 
+     * @param fred 
+     * @return std::ostream& 
+     */
+    friend std::ostream &operator<<(std::ostream &o, CUnitProperty const &unitP);
+    /**
      * @brief Get the Speed object
      * 
      * @return const int 
@@ -24,7 +32,7 @@ public:
      * @return const int 
      */
     const int GetHitRange() const;
-    
+
     /**
      * @brief Get the Probability object
      * 

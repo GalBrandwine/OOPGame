@@ -6,7 +6,6 @@
 CGameAdmin::CGameAdmin()
 {
 	m_reader = new CReader();
-
 	m_unitProperties = new map<int, CUnitProperty *>();
 
 	m_defence = new list<IUnit *>();
@@ -21,6 +20,7 @@ CGameAdmin::~CGameAdmin()
 
 	delete m_defence;
 	delete m_attack;
+	delete m_aux;
 }
 
 #pragma region public_functions
@@ -42,6 +42,10 @@ int CGameAdmin::LoadGameConfigurations()
 	cout << "---START LOAD UNITS---" << endl;
 
 	LoadUnitProperties(properties);
+	/** @note In the given partial implementation, every turn, the properties pointer is passed. 
+	 * Another way to pass properties to pawns:
+	 * * Properties cant change once they have been loaded, So I could inject them upon units loading time.
+	 */
 	LoadOffenceUnits(attackUnits);
 	LoadDefenceUnits(defendUnits);
 
@@ -59,7 +63,7 @@ int CGameAdmin::PlaceOnMap()
 	std::list<IUnitMap *> map_pawns;
 
 	/** @todo Add unittest for this case */
-	if (m_attack->size() == 0 or m_defence->size())
+	if (m_attack->size() == 0 or m_defence->size() == 0)
 	{
 		std::cerr << " Cant place on map. Missing pawns \n";
 		return 0;
@@ -77,8 +81,18 @@ int CGameAdmin::PlaceOnMap()
 		map_pawns.push_back(casted);
 	}
 
+
 	std::shared_ptr<IMap> shared_map = std::make_shared<Map>(map_pawns);
-	/** @todo Inject map to Offence and Defense HERE*/
+	
+	/** @brief Inject map to Offence and Defense*/
+	for (auto &defence : *m_defence)
+	{
+		defence->LoadMap(shared_map);
+	}
+	for (auto &offence : *m_attack)
+	{
+		offence->LoadMap(shared_map);
+	}
 
 	return 1;
 }
@@ -191,12 +205,18 @@ int CGameAdmin::LoadOffenceUnits(list<list<int> *> *units)
 		cout << " tar loc y = " << tarLocY << endl;
 
 		//TODO. Add your code here
+
+		/**
+		 * @todo Adde safety check here:
+		 * * Check if data loaded according to game API.
+		 * 
+		 */
 		CLocation start{startLocX, startLocY};
 		CLocation target{tarLocX, tarLocY};
 		auto convertedUnitType = static_cast<UnitTypes::UnitTypes>(unitType);
 		cout << " unit type name = " << UnitTypes::to_string(convertedUnitType);
 		cout << "\n";
-		IUnit *offence = new COffenceUnit(convertedUnitType, id, start, target);
+		IUnit *offence = new COffenceUnit(convertedUnitType, id, start, target, m_aux->GetInstance());
 		m_attack->push_back(offence);
 
 		delete unit;
@@ -253,10 +273,12 @@ int CGameAdmin::IsGameOver()
 {
 	if (m_attack->size() == 0)
 	{
+		std::cout << "\nOffence won. YEY!\n";
 		return 1;
 	}
 	else if (m_defence->size() == 0)
 	{
+		std::cout << "\nDefence won. YEY!\n";
 		return 2;
 	}
 

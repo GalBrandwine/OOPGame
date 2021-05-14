@@ -8,11 +8,13 @@
 class CDefenceUnit : public IUnit, public IUnitMap
 {
 private:
+    std::shared_ptr<IMap> m_map;
     int m_id;
     UnitTypes::UnitTypes m_unitType;
     CLocation m_startLocation;
 
 public:
+    void LoadMap(std::shared_ptr<IMap> map) override;
     UnitTypes::UnitTypes GetType() const override;
     int GetId() const override;
     const CLocation &GetStartLocation() override;
