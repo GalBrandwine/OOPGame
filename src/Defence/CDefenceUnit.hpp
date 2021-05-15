@@ -12,13 +12,14 @@ private:
     int m_id;
     UnitTypes::UnitTypes m_unitType;
     CLocation m_startLocation;
+    UnitTypes::Side m_Side;
 
 public:
     void LoadMap(std::shared_ptr<IMap> map) override;
     UnitTypes::UnitTypes GetType() const override;
     int GetId() const override;
     const CLocation &GetStartLocation() override;
-
+    UnitTypes::Side GetSide() const override;
     /**
      * @brief Performs a turn given set of properties.
      * 

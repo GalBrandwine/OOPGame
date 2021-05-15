@@ -9,8 +9,19 @@
 class COffenceUnit : public IUnit, public IUnitMap
 {
 private:
+    /**
+     * @brief This member hold all neighbors within range. for this turn.
+     * Its a vector of pairs.
+     * * Element 0: The angle [rad] of the neighboor.
+     * * Element 1: A shared pointer to the neighboor.
+     * 
+     * @note Neighboors are extracted from the map, hence they are represented by IUnitMap.
+     */
+    std::vector<std::pair<float, IUnitMap *>> m_neighboors;
+
     std::shared_ptr<IMap> m_map;
     UnitTypes::UnitTypes m_unitType;
+    UnitTypes::Side m_Side;
     int m_id;
     CLocation m_startLocation;
     CLocation m_targetLocation;
@@ -21,6 +32,7 @@ public:
     UnitTypes::UnitTypes GetType() const override;
     int GetId() const override;
     const CLocation &GetStartLocation() override;
+    UnitTypes::Side GetSide() const override;
     /**
      * @brief Performs a turn given set of properties.
      * 

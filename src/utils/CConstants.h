@@ -2,6 +2,11 @@
 #include <string>
 namespace UnitTypes
 {
+	enum Side
+	{
+		Defence,
+		Offence
+	};
 	enum UnitTypes
 	{
 		Airplane = 1,

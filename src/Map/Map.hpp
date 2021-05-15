@@ -9,11 +9,23 @@
 
 #define MAP_SIZE 100
 
+/**
+ * @brief Map channel to pawn attribute
+ * 
+ */
+enum CHANNELS
+{
+    TBD,
+    TYPE,
+    ID
+};
+
 class Map : public IMap
 {
 private:
     cv::Mat m_map;
     cv::Mat m_debug_map;
+    std::list<IUnitMap *> m_all_pawns;
 
 public:
     /**
@@ -23,7 +35,7 @@ public:
      * @param my_location 
      * @param neighbors 
      */
-    const void FindNeighborsInRange(const int range, const CLocation &my_location, std::vector<std::shared_ptr<IUnitMap>> &neighbors) const override;
+    const void FindNeighborsInRange(const int range, const CLocation &my_location, std::vector<std::pair<float, IUnitMap *>> &neighbors) const override;
 
     /**
      * @brief Construct a new Map object
