@@ -30,8 +30,14 @@ const CLocation &CDefenceUnit::GetStartLocation()
     return m_startLocation;
 }
 
+void CDefenceUnit::SetKilled()
+{
+    m_isAlive = false;
+}
 void CDefenceUnit::PerformTurn(std::map<int, CUnitProperty *> *properties)
 {
+    if (!m_isAlive)
+        return;
     std::cout << "\nIm Defence unit of type: "
               << UnitTypes::to_string(m_unitType) << "\n";
 

@@ -27,8 +27,15 @@ const CLocation &COffenceUnit::GetStartLocation()
     return m_startLocation;
 };
 
+void COffenceUnit::SetKilled()
+{
+    m_isAlive = false;
+}
 void COffenceUnit::PerformTurn(std::map<int, CUnitProperty *> *properties)
 {
+    if (!m_isAlive)
+        return;
+
     std::cout << "\nIm Offence unit of type: "
               << UnitTypes::to_string(m_unitType) << "\n";
 
@@ -54,6 +61,27 @@ void COffenceUnit::PerformTurn(std::map<int, CUnitProperty *> *properties)
      */
     if (m_neighboors.size() != 0)
     {
+        /** @brief Remove duplicates.
+         * I know that there are probably better solutions, this is it for now.
+         */
+        int index_outer = 0;
+        for (const auto &thetha_neighboor : m_neighboors)
+        {
+            int index_inner = 0;
+            for (const auto &thetha_neighboor_inner : m_neighboors)
+            {
+                if (thetha_neighboor.second == thetha_neighboor_inner.second)
+                {
+                    if (index_inner > index_outer)
+                    {
+                        m_neighboors.erase(m_neighboors.begin() + index_inner);
+                    }
+                }
+                index_inner++;
+            }
+            index_outer++;
+        }
+
         int index = 0;
         for (const auto &thetha_neighboor : m_neighboors)
         {
@@ -63,7 +91,7 @@ void COffenceUnit::PerformTurn(std::map<int, CUnitProperty *> *properties)
             /** @brief This is me. Continue filtering.. */
             if (neighboor->GetId() == m_id)
             {
-                std::cout << "This is me (Due to a known bug, this may be printed a lot of times). Continue filtering.. \n";
+                // std::cout << "This is me (Due to a known bug, this may be printed a lot of times). Continue filtering.. \n";
                 m_neighboors.erase(m_neighboors.begin() + index);
                 continue;
             }
@@ -77,8 +105,8 @@ void COffenceUnit::PerformTurn(std::map<int, CUnitProperty *> *properties)
 
             auto type = neighboor->GetType();
             std::cout << "\nFound neighboor "
-                      << " In angel: " << thetha_neighboor.first
-                      << "This neighboor is of type: " << UnitTypes::to_string(neighboor->GetType())
+                      << "In angel: " << thetha_neighboor.first
+                      << " This neighboor is of type: " << UnitTypes::to_string(neighboor->GetType())
                       << " And its ID: " << thetha_neighboor.second->GetId()
                       << "\n";
 
@@ -113,12 +141,25 @@ void COffenceUnit::PerformTurn(std::map<int, CUnitProperty *> *properties)
             auto attack = m_aux->TryHitOpponent(my_properties->GetProbability());
             if (attack == 1)
             {
-                std::cout << "\nAttacking neighboor! "
+                std::cout << "\nAttacking neighboor!\n"
                           << "This neighboor is of type: " << UnitTypes::to_string(type)
                           << " And its ID: " << thetha_neighboor.second->GetId()
                           << "\n";
 
-                /** @todo Now I need to remove this neighboor from map, kill him, kill myself, and break the loop. */
+                /** @todo Now I need to:
+                 *  * Remove this neighboor from map .
+                 *  * Kill him.
+                 *  * Kill myself (which means I need to remove myself from the map also..)
+                 *  * And break the loop. 
+                 */
+                if (m_map->RemovePawn(thetha_neighboor.second->GetId()))
+                {
+                    std::cout << "Successfully removed this neighboor from the map!\n";
+                }
+                if (m_map->RemovePawn(m_id))
+                {
+                    std::cout << "Successfully removed myself from the map!\n";
+                }
             }
         }
     }
@@ -132,7 +173,13 @@ void COffenceUnit::PerformTurn(std::map<int, CUnitProperty *> *properties)
         * * Else (I passed my designated enemy):
         *   * Remove myself from game
         */
-        m_aux->MoveUnit(&m_startLocation, &m_targetLocation, 3, 3, my_properties->GetSpeed());
+        auto x = m_targetLocation.X() - m_startLocation.X();
+        auto y = m_targetLocation.Y() - m_startLocation.Y();
+        std::cout << "My ID: " << m_id << " My current position: [" << m_startLocation.X() << "," << m_startLocation.Y() << "]. Moving toward target: [" << m_targetLocation.X() << "," << m_targetLocation.Y() << "]:\n";
+        std::cout << "[" << x << "," << y << "]\n";
+        m_aux->GetDirection(&m_startLocation, &m_targetLocation, &m_targetDirection);
+        std::cout << "With step[" << m_targetDirection.x << "," << m_targetDirection.y << "]\n";
+        m_aux->MoveUnit(&m_startLocation, &m_targetLocation, m_targetDirection.x, m_targetDirection.y, my_properties->GetSpeed());
     }
 
     /** @todo Update debugMap with units current location. */

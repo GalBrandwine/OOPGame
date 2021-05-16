@@ -3,6 +3,17 @@
 
 #include "CGameAdmin.h"
 
+bool isAliveHelper(IUnit *unit)
+{
+	auto is_alive = unit->IsAlive();
+	if (!is_alive)
+	{
+		delete (unit);
+		return true;
+	}
+
+	return false;
+}
 CGameAdmin::CGameAdmin()
 {
 	m_reader = new CReader();
@@ -60,7 +71,6 @@ int CGameAdmin::LoadGameConfigurations()
 
 int CGameAdmin::PlaceOnMap()
 {
-	std::list<IUnitMap *> map_pawns;
 
 	/** @todo Add unittest for this case */
 	if (m_attack->size() == 0 or m_defence->size() == 0)
@@ -72,18 +82,17 @@ int CGameAdmin::PlaceOnMap()
 	for (const auto &offence : *m_attack)
 	{
 		auto casted = dynamic_cast<IUnitMap *>(offence);
-		map_pawns.push_back(casted);
+		m_mapPawns.push_back(casted);
 	}
 
 	for (const auto &defence : *m_defence)
 	{
 		auto casted = dynamic_cast<IUnitMap *>(defence);
-		map_pawns.push_back(casted);
+		m_mapPawns.push_back(casted);
 	}
 
+	std::shared_ptr<IMap> shared_map = std::make_shared<Map>(m_mapPawns);
 
-	std::shared_ptr<IMap> shared_map = std::make_shared<Map>(map_pawns);
-	
 	/** @brief Inject map to Offence and Defense*/
 	for (auto &defence : *m_defence)
 	{
@@ -103,6 +112,7 @@ int CGameAdmin::Play()
 
 	while (IsGameOver() != 1)
 	{
+		/** @brief Perform actions */
 		for (auto offenceIterator = m_attack->begin(); offenceIterator != m_attack->end(); ++offenceIterator)
 		{
 			(*offenceIterator)->PerformTurn(m_unitProperties);
@@ -112,6 +122,10 @@ int CGameAdmin::Play()
 		{
 			(*defenceIterator)->PerformTurn(m_unitProperties);
 		}
+
+		/** @brief Maintain Players */
+		m_attack->remove_if(isAliveHelper);
+		m_defence->remove_if(isAliveHelper);
 
 		cout << "Turn #: " << turnNumber++ << endl;
 	}
@@ -158,7 +172,7 @@ int CGameAdmin::LoadUnitProperties(list<list<int> *> *properties)
 		cout << " success probability = " << probability << endl;
 		cout << "\n";
 
-		CUnitProperty *up = new CUnitProperty(speed, range, probability);
+		CUnitProperty *up = new CUnitProperty(range, probability, speed);
 		m_unitProperties->insert(std::make_pair(unit_type, up));
 
 		delete unitProperties;
@@ -273,12 +287,16 @@ int CGameAdmin::IsGameOver()
 {
 	if (m_attack->size() == 0)
 	{
-		std::cout << "\nOffence won. YEY!\n";
+		std::cout << "\n\n***************************\n"
+				  << "Defence won. YEY!\n"
+				  << "\n\n***************************\n";
 		return 1;
 	}
 	else if (m_defence->size() == 0)
 	{
-		std::cout << "\nDefence won. YEY!\n";
+		std::cout << "\n\n***************************\n"
+				  << "Offence won. YEY!\n"
+				  << "\n\n***************************\n";
 		return 2;
 	}
 

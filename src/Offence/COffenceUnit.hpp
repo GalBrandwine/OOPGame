@@ -9,6 +9,9 @@
 class COffenceUnit : public IUnit, public IUnitMap
 {
 private:
+    /** @todo Implement Unit that implements IUnit. So that Defence and  offence will inherit from it.*/
+    bool m_isAlive = true;
+    Cdirection m_targetDirection;
     /**
      * @brief This member hold all neighbors within range. for this turn.
      * Its a vector of pairs.
@@ -28,6 +31,9 @@ private:
     CAuxiliary *m_aux;
 
 public:
+    /** @todo Implement Unit that implements IUnit. So that Defence and  offence will inherit from it.*/
+    bool IsAlive() override { return m_isAlive; };
+    void SetKilled() override;
     void LoadMap(std::shared_ptr<IMap> map) override;
     UnitTypes::UnitTypes GetType() const override;
     int GetId() const override;

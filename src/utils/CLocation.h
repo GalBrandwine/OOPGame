@@ -1,12 +1,18 @@
 #pragma once
+
+struct Cdirection
+{
+	float x, y;
+};
+
 class CLocation
 {
 public:
 	CLocation(int x, int y);
 
 	int X() const
-	{ 
-		return m_locationX; 
+	{
+		return m_locationX;
 	}
 
 	void SetX(int val)
@@ -14,7 +20,7 @@ public:
 		m_locationX = val;
 	}
 
-	int Y() const 
+	int Y() const
 	{
 		return m_locationY;
 	}
@@ -28,4 +34,3 @@ private:
 	int m_locationX;
 	int m_locationY;
 };
-

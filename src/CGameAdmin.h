@@ -53,6 +53,7 @@ private:
 	CReader *m_reader = nullptr;
 	CAuxiliary *m_aux;
 	map<int, CUnitProperty *> *m_unitProperties = nullptr;
+	std::list<IUnitMap *> m_mapPawns;
 	list<IUnit *> *m_attack = nullptr;
 	list<IUnit *> *m_defence = nullptr;
 };

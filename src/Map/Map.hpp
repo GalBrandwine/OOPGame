@@ -25,9 +25,28 @@ class Map : public IMap
 private:
     cv::Mat m_map;
     cv::Mat m_debug_map;
-    std::list<IUnitMap *> m_all_pawns;
+    /** @brief Store a reference to pawns, 
+     * so when GameAdmin is maintaining the players lists it will be updates here.
+    */
+    std::list<IUnitMap *> &m_all_pawns;
+
+    /** @brief BGR Channel usage: 
+     * * CH0 - TBD
+     * * CH1 - Type
+     * * CH2 - ID
+    */
+    void FillMap();
 
 public:
+    /**
+    * @brief Remove this ID from map
+    * 
+    * @param id 
+    * @return true If removed successfully
+    * @return false Otherwise
+    */
+    bool RemovePawn(int id) override;
+
     /**
      * @brief Find neighboors
      * 

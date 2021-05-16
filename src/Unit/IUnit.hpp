@@ -10,6 +10,7 @@
 class IUnit
 {
 public:
+    virtual bool IsAlive() = 0;
     virtual void LoadMap(std::shared_ptr<IMap> map) = 0;
     /**
      * @brief Performs a turn under Derived class rules.

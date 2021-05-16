@@ -8,6 +8,7 @@
 class CDefenceUnit : public IUnit, public IUnitMap
 {
 private:
+    bool m_isAlive = true;
     std::shared_ptr<IMap> m_map;
     int m_id;
     UnitTypes::UnitTypes m_unitType;
@@ -15,6 +16,9 @@ private:
     UnitTypes::Side m_Side;
 
 public:
+    /** @todo Implement Unit that implements IUnit. So that Defence and  offence will inherit from it.*/
+    bool IsAlive() override { return m_isAlive; };
+    void SetKilled() override;
     void LoadMap(std::shared_ptr<IMap> map) override;
     UnitTypes::UnitTypes GetType() const override;
     int GetId() const override;

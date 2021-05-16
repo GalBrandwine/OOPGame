@@ -9,6 +9,46 @@ const void Map::ShowMap() const
 }
 #endif
 
+bool Map::RemovePawn(int id)
+{
+    int index = 0;
+    auto it = std::find_if(m_all_pawns.begin(), m_all_pawns.end(),
+                           [&index, id](IUnitMap *pawnOnMap) {
+                               auto predicate = pawnOnMap->GetId() == id;
+                               if (predicate)
+                               {
+                                   std::cout << "**************************************** Removing pawn ID: " << id;
+                               }
+
+                               return predicate;
+                           });
+
+    if (it == m_all_pawns.end())
+    {
+        std::cout << "\n\n******** Could not find given ID! ********* \n\n";
+        return false;
+    }
+
+    (*it)->SetKilled();
+    m_all_pawns.erase(it);
+
+    /** @brief Remove it from map */
+    for (cv::MatIterator_<cv::Vec3i> matIt = m_map.begin<cv::Vec3i>(); matIt != m_map.end<cv::Vec3i>(); ++matIt)
+    {
+        // std::cout << "Visiting pixel: " << (*matIt);
+        if ((*matIt)[CHANNELS::ID] == id)
+        {
+            std::cout << ". Pixel reset success!\n";
+            (*matIt)[CHANNELS::ID] = 0;
+            (*matIt)[CHANNELS::TYPE] = 0;
+        }
+        else
+            std::cout << "\n";
+    }
+
+    FillMap();
+    return true;
+}
 const void Map::FindNeighborsInRange(const int range, const CLocation &my_location, std::vector<std::pair<float, IUnitMap *>> &neighbors) const
 {
     cv::Point2d my_position(my_location.X(), my_location.Y());
@@ -41,8 +81,15 @@ const void Map::FindNeighborsInRange(const int range, const CLocation &my_locati
                  * @brief Get this neighboor from the pawns list stored inside Map
                  * O(|pawns| ~ n)
                  */
+                // std::cout << "\nm_all_pawns size: " << m_all_pawns.size() << "\n";
                 auto it = std::find_if(m_all_pawns.begin(), m_all_pawns.end(),
-                                       [possible_neighbor](IUnitMap *pawnOnMap) {
+                                       [&possible_neighbor](IUnitMap *pawnOnMap) {
+                                           if (pawnOnMap == nullptr)
+                                           {
+                                               std::cout << "Hit null! \n";
+                                               return false;
+                                           }
+
                                            return pawnOnMap->GetId() == possible_neighbor[CHANNELS::ID];
                                        });
 
@@ -65,9 +112,16 @@ const void Map::FindNeighborsInRange(const int range, const CLocation &my_locati
              * 
              */
             debug.at<cv::Vec3b>(new_loc[1], new_loc[0]) = new_loc;
+            try
+            {
+                cv::imshow("Map_my_location", debug);
+                cv::waitKey(1);
+            }
+            catch (const std::exception &e)
+            {
+                std::cerr << e.what() << '\n';
+            }
 
-            cv::imshow("Map_my_location", debug);
-            cv::waitKey(5);
 #endif
         }
     }
@@ -75,19 +129,15 @@ const void Map::FindNeighborsInRange(const int range, const CLocation &my_locati
     // cv::imshow("Map_my_location", debug);
     // cv::waitKey(0);
 }
-Map::Map(std::list<IUnitMap *> &pawns)
-    : m_map(cv::Mat(MAP_SIZE, MAP_SIZE, CV_32SC3, cv::Scalar(0, 0, 0))),
-      m_debug_map(cv::Mat(MAP_SIZE, MAP_SIZE, CV_8UC3, cv::Scalar(0, 0, 0)))
-{
 
-    std::cout << "Setting " << pawns.size() << " pawns on the map.\n";
-    for (const auto &pawn : pawns)
+void Map::FillMap()
+{
+    // m_map = cv::Mat(MAP_SIZE, MAP_SIZE, CV_32SC3, cv::Scalar(0, 0, 0));
+    m_debug_map = cv::Mat(MAP_SIZE, MAP_SIZE, CV_8UC3, cv::Scalar(0, 0, 0));
+    std::cout << "Setting " << m_all_pawns.size() << " pawns on the map.\n";
+    for (const auto &pawn : m_all_pawns)
     {
-        /** @brief BGR Channel usage: 
-         * * CH0 - TBD
-         * * CH1 - Type
-         * * CH2 - ID
-         */
+
         cv::Vec3i pawn_on_map;
         pawn_on_map[CHANNELS::TBD] = 0;
         pawn_on_map[CHANNELS::TYPE] = pawn->GetType();
@@ -99,8 +149,14 @@ Map::Map(std::list<IUnitMap *> &pawns)
         pawn_on_map[1] = UnitTypes::to_color(pawn->GetType());
         m_debug_map.at<cv::Vec3i>(cv::Point(pawn->GetStartLocation().X(), pawn->GetStartLocation().Y())) = pawn_on_map;
     }
-
-    m_all_pawns = pawns;
+}
+Map::Map(std::list<IUnitMap *> &pawns)
+    : m_map(cv::Mat(MAP_SIZE, MAP_SIZE, CV_32SC3, cv::Scalar(0, 0, 0))),
+      m_debug_map(cv::Mat(MAP_SIZE, MAP_SIZE, CV_8UC3, cv::Scalar(0, 0, 0))),
+      m_all_pawns(pawns)
+{
+    FillMap();
+    // m_all_pawns = pawns;
     // #ifdef ShowDebugMap
     //     cv::imshow("Map", m_debug_map);
     //     cv::waitKey(0);
