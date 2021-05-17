@@ -7,15 +7,13 @@
  * 
  */
 
-#define MAP_SIZE 100
-
 /**
  * @brief Map channel to pawn attribute
  * 
  */
 enum CHANNELS
 {
-    TBD,
+    SIDE,
     TYPE,
     ID
 };
@@ -23,6 +21,7 @@ enum CHANNELS
 class Map : public IMap
 {
 private:
+    int m_map_size;
     cv::Mat m_map;
     cv::Mat m_debug_map;
     /** @brief Store a reference to pawns, 
@@ -54,7 +53,7 @@ public:
      * @param my_location 
      * @param neighbors 
      */
-    const void FindNeighborsInRange(const int range, const CLocation &my_location, std::vector<std::pair<float, IUnitMap *>> &neighbors) const override;
+    const void FindNeighborsInRange(const int range, const CLocation &my_location, std::list<std::pair<float, IUnitMap *>> &neighbors) const override;
 
     /**
      * @brief Construct a new Map object
@@ -68,8 +67,9 @@ public:
      * @note I could use 4D image If I need more information to store.
      * 
      * @param pawns list filled with initiated pawns
+     * @param map_size 
      */
-    Map(std::list<IUnitMap *> &pawns);
+    Map(std::list<IUnitMap *> &pawns, int map_size = MAP_SIZE);
     ~Map();
 
 #ifdef ShowDebugMap

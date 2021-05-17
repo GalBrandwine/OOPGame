@@ -5,10 +5,12 @@
 #include <opencv2/opencv.hpp>
 
 #include "IUnitMap.hpp"
-#include "utils/CLocation.h"
+#include "CUnitProperty.hpp"
 #ifdef ShowDebugMap
 #include <opencv2/highgui.hpp>
 #endif
+
+#define MAP_SIZE 100
 
 class IMap
 {
@@ -28,7 +30,7 @@ public:
     * @param[in] my_location 
     * @param[out] neighbors std::vector<std::shared_ptr<IUnitMap>> & of all neighboors found.
     */
-    virtual const void FindNeighborsInRange(const int range, const CLocation &my_location, std::vector<std::pair<float, IUnitMap *>> &neighbors) const = 0;
+    virtual const void FindNeighborsInRange(const int range, const CLocation &my_location, std::list<std::pair<float, IUnitMap *>> &neighbors) const = 0;
 
 #ifdef ShowDebugMap
     virtual const void ShowMap() const = 0;

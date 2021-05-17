@@ -2,6 +2,7 @@
 #include <iostream>
 
 #define DEFAULT_SPEED 1
+#define DEFAULT_LOCATION -1
 
 class CUnitProperty
 {

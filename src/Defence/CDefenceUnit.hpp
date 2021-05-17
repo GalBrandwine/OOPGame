@@ -1,41 +1,62 @@
 #pragma once
-#include "IUnit.hpp"
-#include "IUnitMap.hpp"
+#include "Unit.hpp"
 #include "utils/utils.h"
 #include "utils/CLocation.h"
 #include "utils/CConstants.h"
 
-class CDefenceUnit : public IUnit, public IUnitMap
+/**
+ * @brief 
+ * 
+ * * Anti-air system  -> Airplane
+ * * Anti-tank system -> Tank
+ * * Anti-ship system -> Ship
+ */
+static std::map<UnitTypes::UnitTypes, UnitTypes::UnitTypes> DefenseDict(
+    {{UnitTypes::UnitTypes::AntiAir, UnitTypes::UnitTypes::Airplane},
+     {UnitTypes::UnitTypes::AntiTank, UnitTypes::UnitTypes::Tank},
+     {UnitTypes::UnitTypes::AntiShip, UnitTypes::UnitTypes::Ship}});
+
+class CDefenceUnit : public Unit
 {
-private:
-    bool m_isAlive = true;
-    std::shared_ptr<IMap> m_map;
-    int m_id;
-    UnitTypes::UnitTypes m_unitType;
-    CLocation m_startLocation;
-    UnitTypes::Side m_Side;
 
 public:
-    /** @todo Implement Unit that implements IUnit. So that Defence and  offence will inherit from it.*/
-    bool IsAlive() override { return m_isAlive; };
-    void SetKilled() override;
-    void LoadMap(std::shared_ptr<IMap> map) override;
-    UnitTypes::UnitTypes GetType() const override;
-    int GetId() const override;
-    const CLocation &GetStartLocation() override;
-    UnitTypes::Side GetSide() const override;
     /**
      * @brief Performs a turn given set of properties.
      * 
      * **Turn**
-     * * Defense units:
-     *     If there is an offence unit in range - intercept it according to the given
-     *     probability.  
-     *     When the offence unit is destroyed - remove it.
+     * * Offence units:
+     *     If the target is in the range - attack it according to the given probability.
+     *     When the target is destroyed - remove it and the offence unit.
+     *     If the target is not in range - advance towards the target with the given speed.
      * 
      * @param properties 
      */
     void PerformTurn(std::map<int, CUnitProperty *> *properties) override;
-    CDefenceUnit(UnitTypes::UnitTypes unitType, int id, CLocation start);
+
+    /**
+     * @brief Construct a new COffenceUnit::COffenceUnit object
+     * 
+     * @param unitType 
+     * @param id 
+     * @param start 
+     * @param target 
+     * @param aux_ptr 
+     */
+    CDefenceUnit(UnitTypes::UnitTypes unitType, int id, CLocation start, CAuxiliary *aux_ptr);
     ~CDefenceUnit();
+
+private:
+    /**
+     * @brief Check if enemy within  range is an enemy I can kill
+     * 
+     * Defenc-system / Enemies relations:
+     * * Anti-air system  -> Airplane
+     * * Anti-tank system -> Tank
+     * * Anti-ship system -> Ship
+     * 
+     * @param type 
+     * @return true 
+     * @return false 
+     */
+    bool canIDefendFromThisEnemy(UnitTypes::UnitTypes type) const;
 };

@@ -25,26 +25,51 @@ namespace UnitTypes
 	 * @param unitType 
 	 * @return const char 
 	 */
-	static const char to_color(UnitTypes unitType)
+	static const std::array<char, 3> to_color(UnitTypes unitType)
 	{
+		std::array<char, 3> color;
 		switch (unitType)
 		{
 		case UnitTypes::Airplane:
-			return 50;
+			color[0] = 50;
+			color[1] = 100;
+			color[2] = 255;
+			return color;
 		case UnitTypes::Tank:
-			return 80;
+			color[0] = 80;
+			color[1] = 80;
+			color[2] = 255;
+			return color;
 		case UnitTypes::Ship:
-			return 100;
+			color[0] = 100;
+			color[1] = 100;
+			color[2] = 255;
+			return color;
 		case UnitTypes::AntiAir:
-			return 130;
+			color[0] = 100;
+			color[1] = 100;
+			color[2] = 0;
+			return color;
 		case UnitTypes::AntiTank:
-			return 160;
+			color[0] = 100;
+			color[1] = 255;
+			color[2] = 0;
+			return color;
 		case UnitTypes::AntiShip:
-			return 180;
+			color[0] = 50;
+			color[1] = 255;
+			color[2] = 0;
+			return color;
 		case UnitTypes::Building:
-			return 200;
+			color[0] = 0;
+			color[1] = 255;
+			color[2] = 0;
+			return color;
 		default:
-			return 255;
+			color[0] = 255;
+			color[1] = 255;
+			color[2] = 255;
+			return color;
 		}
 	}
 	static const std::string to_string(UnitTypes unitType)

@@ -48,6 +48,7 @@ set(GAME_sources
   ${CMAKE_SOURCE_DIR}/src/CGameAdmin.cpp
   ${CMAKE_SOURCE_DIR}/src/Defence/CDefenceUnit.cpp
   ${CMAKE_SOURCE_DIR}/src/Offence/COffenceUnit.cpp
+  ${CMAKE_SOURCE_DIR}/src/Unit/Unit.cpp
   ${CMAKE_SOURCE_DIR}/src/Unit/CUnitProperty.cpp
   ${CMAKE_SOURCE_DIR}/src/utils/CLocation.cpp
   ${CMAKE_SOURCE_DIR}/src/utils/CAuxiliary.cpp

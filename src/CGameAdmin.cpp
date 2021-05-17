@@ -91,7 +91,7 @@ int CGameAdmin::PlaceOnMap()
 		m_mapPawns.push_back(casted);
 	}
 
-	std::shared_ptr<IMap> shared_map = std::make_shared<Map>(m_mapPawns);
+	std::shared_ptr<IMap> shared_map = std::make_shared<Map>(m_mapPawns, MAP_SIZE);
 
 	/** @brief Inject map to Offence and Defense*/
 	for (auto &defence : *m_defence)
@@ -274,7 +274,7 @@ int CGameAdmin::LoadDefenceUnits(list<list<int> *> *units)
 		auto convertedUnitType = static_cast<UnitTypes::UnitTypes>(unitType);
 		cout << " unit type name = " << UnitTypes::to_string(convertedUnitType);
 		cout << "\n";
-		IUnit *defence = new CDefenceUnit(convertedUnitType, id, start);
+		IUnit *defence = new CDefenceUnit(convertedUnitType, id, start, m_aux->GetInstance());
 		m_defence->push_back(defence);
 
 		delete unit;

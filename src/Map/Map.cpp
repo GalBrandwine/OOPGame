@@ -49,20 +49,20 @@ bool Map::RemovePawn(int id)
     FillMap();
     return true;
 }
-const void Map::FindNeighborsInRange(const int range, const CLocation &my_location, std::vector<std::pair<float, IUnitMap *>> &neighbors) const
+
+const void Map::FindNeighborsInRange(const int range, const CLocation &my_location, std::list<std::pair<float, IUnitMap *>> &neighbors) const
 {
     cv::Point2d my_position(my_location.X(), my_location.Y());
-
 #ifdef ShowDebugMap
     cv::Mat debug;
     m_debug_map.copyTo(debug);
     cv::circle(debug, my_position, range, cv::Scalar(200), 1);
 #endif
 
-    /** @note I could iterate over the image itself with X,Y values. Bu this way I iterate on less pixels */
-    for (int r_i = range; r_i > 0; r_i--) /** @brief Circle inwards O(range<=100 ~ 1)*/
+    /** @note I could iterate over the image itself with X,Y values. But this way I iterate on less pixels */
+    for (int r_i = range; r_i > 0; r_i--) /** @brief Circle inwards * \f$O(range<=100 ~ 1)\f$*/
     {
-        for (float theta = 0; theta <= 2 * CV_PI; theta += 0.05) /** @brief O(theta=2Phi ~ 1) */
+        for (float theta = 0; theta <= 2 * CV_PI; theta += 0.05) /** @brief \f$O(theta=2Phi ~ 1)\f$ */
         {
             auto Px_delta = cos(theta) * r_i;
             auto Py_delta = sin(theta) * r_i;
@@ -79,9 +79,8 @@ const void Map::FindNeighborsInRange(const int range, const CLocation &my_locati
             {
                 /**
                  * @brief Get this neighboor from the pawns list stored inside Map
-                 * O(|pawns| ~ n)
+                 * \f$O(|pawns| ~ n)\f$
                  */
-                // std::cout << "\nm_all_pawns size: " << m_all_pawns.size() << "\n";
                 auto it = std::find_if(m_all_pawns.begin(), m_all_pawns.end(),
                                        [&possible_neighbor](IUnitMap *pawnOnMap) {
                                            if (pawnOnMap == nullptr)
@@ -103,15 +102,14 @@ const void Map::FindNeighborsInRange(const int range, const CLocation &my_locati
             }
 
 #ifdef ShowDebugMap
-            // std::cout
-            //     << "Current theta: " << theta << "\n";
-            // std::cout << " Current point: " << new_loc << "\n";
-
             /**
              * @brief Paint on the debug image current visited pixel.
              * 
              */
-            debug.at<cv::Vec3b>(new_loc[1], new_loc[0]) = new_loc;
+            auto color = UnitTypes::to_color(static_cast<UnitTypes::UnitTypes>(0));
+            debug.at<cv::Vec3b>(new_loc[1], new_loc[0])[0] = color[0];
+            debug.at<cv::Vec3b>(new_loc[1], new_loc[0])[1] = color[1];
+            debug.at<cv::Vec3b>(new_loc[1], new_loc[0])[2] = color[2];
             try
             {
                 cv::imshow("Map_my_location", debug);
@@ -125,42 +123,47 @@ const void Map::FindNeighborsInRange(const int range, const CLocation &my_locati
 #endif
         }
     }
-
-    // cv::imshow("Map_my_location", debug);
-    // cv::waitKey(0);
 }
 
 void Map::FillMap()
 {
-    // m_map = cv::Mat(MAP_SIZE, MAP_SIZE, CV_32SC3, cv::Scalar(0, 0, 0));
-    m_debug_map = cv::Mat(MAP_SIZE, MAP_SIZE, CV_8UC3, cv::Scalar(0, 0, 0));
+    m_debug_map = cv::Mat(m_map_size, m_map_size, CV_8UC3, cv::Scalar(0, 0, 0));
     std::cout << "Setting " << m_all_pawns.size() << " pawns on the map.\n";
     for (const auto &pawn : m_all_pawns)
     {
 
         cv::Vec3i pawn_on_map;
-        pawn_on_map[CHANNELS::TBD] = 0;
+        pawn_on_map[CHANNELS::SIDE] = pawn->GetSide();
         pawn_on_map[CHANNELS::TYPE] = pawn->GetType();
         pawn_on_map[CHANNELS::ID] = pawn->GetId();
 
-        /** @todo Add protection agains pawns that are placed outside the map. */
-        m_map.at<cv::Vec3i>(cv::Point(pawn->GetStartLocation().X(), pawn->GetStartLocation().Y())) = pawn_on_map;
+        /** @brief Add protection agains pawns that are placed outside the map. */
+        if (pawn->GetStartLocation().X() < m_map_size and
+            pawn->GetStartLocation().X() >= 0 and
+            pawn->GetStartLocation().Y() < m_map_size and
+            pawn->GetStartLocation().Y() >= 0)
+        {
+            m_map.at<cv::Vec3i>(cv::Point(pawn->GetStartLocation().X(), pawn->GetStartLocation().Y())) = pawn_on_map;
 
-        pawn_on_map[1] = UnitTypes::to_color(pawn->GetType());
-        m_debug_map.at<cv::Vec3i>(cv::Point(pawn->GetStartLocation().X(), pawn->GetStartLocation().Y())) = pawn_on_map;
+            auto color = UnitTypes::to_color(pawn->GetType());
+            m_debug_map.at<cv::Vec3i>(cv::Point(pawn->GetStartLocation().X(), pawn->GetStartLocation().Y()))[0] = color[0];
+            m_debug_map.at<cv::Vec3i>(cv::Point(pawn->GetStartLocation().X(), pawn->GetStartLocation().Y()))[1] = color[1];
+            m_debug_map.at<cv::Vec3i>(cv::Point(pawn->GetStartLocation().X(), pawn->GetStartLocation().Y()))[2] = color[2];
+        }
+        else
+            std::cerr << "\n\n********************\n"
+                      << "Warning! loaded pawn start location is not a legal start location! See Resources configurations.\n"
+                      << "Please note that map size is: " << m_map_size
+                      << "\n\n********************\n";
     }
 }
-Map::Map(std::list<IUnitMap *> &pawns)
-    : m_map(cv::Mat(MAP_SIZE, MAP_SIZE, CV_32SC3, cv::Scalar(0, 0, 0))),
-      m_debug_map(cv::Mat(MAP_SIZE, MAP_SIZE, CV_8UC3, cv::Scalar(0, 0, 0))),
-      m_all_pawns(pawns)
+Map::Map(std::list<IUnitMap *> &pawns, int map_size)
+    : m_map(cv::Mat(map_size, map_size, CV_32SC3, cv::Scalar(0, 0, 0))),
+      m_debug_map(cv::Mat(map_size, map_size, CV_8UC3, cv::Scalar(0, 0, 0))),
+      m_all_pawns(pawns),
+      m_map_size(map_size)
 {
     FillMap();
-    // m_all_pawns = pawns;
-    // #ifdef ShowDebugMap
-    //     cv::imshow("Map", m_debug_map);
-    //     cv::waitKey(0);
-    // #endif
 }
 
 Map::~Map()
