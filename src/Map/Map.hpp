@@ -53,7 +53,7 @@ public:
      * @param my_location 
      * @param neighbors 
      */
-    const void FindNeighborsInRange(const int range, const CLocation &my_location, std::list<std::pair<float, IUnitMap *>> &neighbors) const override;
+    void FindNeighborsInRange(const int range, const CLocation &my_location, std::list<std::pair<float, IUnitMap *>> &neighbors) const override;
 
     /**
      * @brief Construct a new Map object
@@ -73,6 +73,6 @@ public:
     ~Map();
 
 #ifdef ShowDebugMap
-    const void ShowMap() const override;
+    void ShowMap() override;
 #endif
 };

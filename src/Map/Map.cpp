@@ -2,8 +2,9 @@
 #include <cstdint>
 
 #ifdef ShowDebugMap
-const void Map::ShowMap() const
+void Map::ShowMap()
 {
+    FillMap();
     cv::imshow("Map", m_debug_map);
     cv::waitKey(10);
 }
@@ -50,25 +51,33 @@ bool Map::RemovePawn(int id)
     return true;
 }
 
-const void Map::FindNeighborsInRange(const int range, const CLocation &my_location, std::list<std::pair<float, IUnitMap *>> &neighbors) const
+void Map::FindNeighborsInRange(const int range, const CLocation &my_location, std::list<std::pair<float, IUnitMap *>> &neighbors) const
 {
     cv::Point2d my_position(my_location.X(), my_location.Y());
+
 #ifdef ShowDebugMap
     cv::Mat debug;
     m_debug_map.copyTo(debug);
-    cv::circle(debug, my_position, range, cv::Scalar(200), 1);
+    cv::circle(debug, my_position, range + 1, cv::Scalar(255, 0, 0), 1);
 #endif
 
+    int debug1 = 0;
     /** @note I could iterate over the image itself with X,Y values. But this way I iterate on less pixels */
     for (int r_i = range; r_i > 0; r_i--) /** @brief Circle inwards * \f$O(range<=100 ~ 1)\f$*/
     {
-        for (float theta = 0; theta <= 2 * CV_PI; theta += 0.05) /** @brief \f$O(theta=2Phi ~ 1)\f$ */
+        for (float theta = 0; theta <=2 * CV_PI; theta += 0.05) /** @brief \f$O(theta=2Phi ~ 1)\f$ */
         {
             auto Px_delta = cos(theta) * r_i;
             auto Py_delta = sin(theta) * r_i;
             cv::Vec3i new_loc(my_position.x + Px_delta, my_position.y + Py_delta, 255);
 
-            auto possible_neighbor = m_map.at<cv::Vec3i>(new_loc[1], new_loc[0]);
+            if (new_loc[0] > m_map_size or new_loc[0] < 0 or new_loc[1] > m_map_size or new_loc[1] < 0)
+            {
+                std::cerr << " Out of bounds, continueing to next pixel.\n";
+                continue;
+            }
+
+            const auto &possible_neighbor = m_map.at<cv::Vec3i>(new_loc[1], new_loc[0]);
 
             /**
              * @brief Reminder: 
@@ -97,8 +106,7 @@ const void Map::FindNeighborsInRange(const int range, const CLocation &my_locati
                     std::cerr << "\n\n******** Found a neighboor that is not in the neighboor list - Thats not possible! ********* \n\n";
                     return;
                 }
-                auto t = std::make_pair(theta, *it);
-                neighbors.push_back(t);
+                neighbors.push_back(std::make_pair(theta, *it));
             }
 
 #ifdef ShowDebugMap
@@ -112,23 +120,24 @@ const void Map::FindNeighborsInRange(const int range, const CLocation &my_locati
             debug.at<cv::Vec3b>(new_loc[1], new_loc[0])[2] = color[2];
             try
             {
-                cv::imshow("Map_my_location", debug);
+                cv::imshow("Scan", debug);
                 cv::waitKey(1);
             }
             catch (const std::exception &e)
             {
                 std::cerr << e.what() << '\n';
             }
-
+            debug1++;
 #endif
         }
     }
+    std::cout << "\nReturning " << debug1 << "\n";
 }
 
 void Map::FillMap()
 {
     m_debug_map = cv::Mat(m_map_size, m_map_size, CV_8UC3, cv::Scalar(0, 0, 0));
-    std::cout << "Setting " << m_all_pawns.size() << " pawns on the map.\n";
+    std::cout << "\nSetting " << m_all_pawns.size() << " pawns on the map.\n";
     for (const auto &pawn : m_all_pawns)
     {
 
@@ -146,9 +155,9 @@ void Map::FillMap()
             m_map.at<cv::Vec3i>(cv::Point(pawn->GetStartLocation().X(), pawn->GetStartLocation().Y())) = pawn_on_map;
 
             auto color = UnitTypes::to_color(pawn->GetType());
-            m_debug_map.at<cv::Vec3i>(cv::Point(pawn->GetStartLocation().X(), pawn->GetStartLocation().Y()))[0] = color[0];
-            m_debug_map.at<cv::Vec3i>(cv::Point(pawn->GetStartLocation().X(), pawn->GetStartLocation().Y()))[1] = color[1];
-            m_debug_map.at<cv::Vec3i>(cv::Point(pawn->GetStartLocation().X(), pawn->GetStartLocation().Y()))[2] = color[2];
+            m_debug_map.at<cv::Vec3b>(cv::Point(pawn->GetStartLocation().X(), pawn->GetStartLocation().Y()))[0] = color[0];
+            m_debug_map.at<cv::Vec3b>(cv::Point(pawn->GetStartLocation().X(), pawn->GetStartLocation().Y()))[1] = color[1];
+            m_debug_map.at<cv::Vec3b>(cv::Point(pawn->GetStartLocation().X(), pawn->GetStartLocation().Y()))[2] = color[2];
         }
         else
             std::cerr << "\n\n********************\n"

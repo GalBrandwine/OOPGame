@@ -30,10 +30,10 @@ public:
     * @param[in] my_location 
     * @param[out] neighbors std::vector<std::shared_ptr<IUnitMap>> & of all neighboors found.
     */
-    virtual const void FindNeighborsInRange(const int range, const CLocation &my_location, std::list<std::pair<float, IUnitMap *>> &neighbors) const = 0;
+    virtual void FindNeighborsInRange(const int range, const CLocation &my_location, std::list<std::pair<float, IUnitMap *>> &neighbors) const = 0;
 
 #ifdef ShowDebugMap
-    virtual const void ShowMap() const = 0;
+    virtual void ShowMap() = 0;
 #endif
     virtual ~IMap(){};
 };

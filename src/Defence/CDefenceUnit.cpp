@@ -68,10 +68,6 @@ void CDefenceUnit::PerformTurn(std::map<int, CUnitProperty *> *properties)
         /**
          * @brief Step 3
          * By now all the nighboors left are enemies within range:
-         * * If enemy is in range: 
-         *   * Attack it with probability to hit. 
-         *   * If enemy destroyed:
-         *   *  * Remove it and this offence unit from  the map.
          * 
          * @note According to story:
          *  Bolvatians have multiple tanks, planes and ships. They want to destroy all the
@@ -98,7 +94,7 @@ void CDefenceUnit::PerformTurn(std::map<int, CUnitProperty *> *properties)
                           << " And its ID: " << thetha_neighboor.second->GetId()
                           << "\n";
 
-                /** @todo Now I need to:
+                /** @note Now I need to:
                  *  * Remove this neighboor from map .
                  *  * Kill him.
                  *  * Kill myself (which means I need to remove myself from the map also..)
@@ -116,27 +112,6 @@ void CDefenceUnit::PerformTurn(std::map<int, CUnitProperty *> *properties)
             }
         }
     }
-
-    // /** @brief I filtered all the neighboors, and no enemies in sight. Advancing to designated enemy! */
-    // else
-    // {
-    //     /** @brief Step4:
-    //     * * Get enemy diractions.
-    //     * * * Can I move to this direction?
-    //     * * Else (I passed my designated enemy):
-    //     *   * Remove myself from game
-    //     */
-    //     auto x = m_targetLocation.X() - m_startLocation.X();
-    //     auto y = m_targetLocation.Y() - m_startLocation.Y();
-
-    //     std::cout << "My ID: " << m_id << " My current position: [" << m_startLocation.X() << "," << m_startLocation.Y() << "]. Moving toward target: [" << m_targetLocation.X() << "," << m_targetLocation.Y() << "]:\n";
-    //     std::cout << "[" << x << "," << y << "]\n";
-
-    //     m_aux->GetDirection(&m_startLocation, &m_targetLocation, &m_targetDirection);
-    //     std::cout << "With step[" << m_targetDirection.x << "," << m_targetDirection.y << "]\n";
-
-    //     // m_aux->MoveUnit(&m_startLocation, &m_targetLocation, m_targetDirection.x, m_targetDirection.y, my_properties->GetSpeed());
-    // }
 
     /** @todo Update debugMap with units current location. */
     m_map->ShowMap();

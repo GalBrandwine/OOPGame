@@ -102,7 +102,7 @@ void COffenceUnit::PerformTurn(std::map<int, CUnitProperty *> *properties)
         std::cout << "[" << x << "," << y << "]\n";
 
         m_aux->GetDirection(&m_startLocation, &m_targetLocation, &m_targetDirection);
-        std::cout << "With step[" << m_targetDirection.x << "," << m_targetDirection.y << "]\n";
+        std::cout << "With step [" << m_targetDirection.x << "," << m_targetDirection.y << "]\n";
 
         m_aux->MoveUnit(&m_startLocation, &m_targetLocation, m_targetDirection.x, m_targetDirection.y, my_properties->GetSpeed());
     }
