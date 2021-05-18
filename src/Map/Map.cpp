@@ -61,7 +61,6 @@ void Map::FindNeighborsInRange(const int range, const CLocation &my_location, st
     cv::circle(debug, my_position, range + 1, cv::Scalar(255, 0, 0), 1);
 #endif
 
-    int debug1 = 0;
     /** @note I could iterate over the image itself with X,Y values. But this way I iterate on less pixels */
     for (int r_i = range; r_i > 0; r_i--) /** @brief Circle inwards * \f$O(range<=100 ~ 1)\f$*/
     {
@@ -127,11 +126,9 @@ void Map::FindNeighborsInRange(const int range, const CLocation &my_location, st
             {
                 std::cerr << e.what() << '\n';
             }
-            debug1++;
 #endif
         }
     }
-    std::cout << "\nReturning " << debug1 << "\n";
 }
 
 void Map::FillMap()

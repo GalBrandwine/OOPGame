@@ -14,6 +14,7 @@
  * using namespace std;
  */
 
+#define MAXIMUM_GAME_LENGTH 300
 class CGameAdmin
 {
 public:

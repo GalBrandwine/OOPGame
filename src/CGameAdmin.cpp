@@ -27,11 +27,36 @@ CGameAdmin::~CGameAdmin()
 {
 	delete m_reader;
 
+	for (auto &property : *m_unitProperties)
+	{
+		delete property.second;
+	}
+	m_unitProperties->clear();
 	delete m_unitProperties;
+
+	while (m_mapPawns.size() > 0)
+	{
+		auto pawn = m_mapPawns.front();
+		delete pawn;
+		m_mapPawns.pop_front();
+	}
+
+	while (m_attack->size() > 0)
+	{
+		auto attacker = m_attack->front();
+		delete attacker;
+		m_attack->pop_front();
+	}
+
+	while (m_defence->size() > 0)
+	{
+		auto defender = m_defence->front();
+		delete defender;
+		m_defence->pop_front();
+	}
 
 	delete m_defence;
 	delete m_attack;
-	delete m_aux;
 }
 
 #pragma region public_functions
@@ -43,9 +68,9 @@ int CGameAdmin::LoadGameConfigurations()
 	list<list<int> *> *attackUnits = new list<list<int> *>();
 	list<list<int> *> *defendUnits = new list<list<int> *>();
 
-	if (m_reader->ReadUnitProperties("/home/gal/dev/Game/conf/Resources/UnitsProperties.txt", properties) == 0 ||
-		m_reader->ReadUnit("/home/gal/dev/Game/conf/Resources/Attack.txt", attackUnits) == 0 ||
-		m_reader->ReadUnit("/home/gal/dev/Game/conf/Resources/Defence.txt", defendUnits) == 0)
+	if (m_reader->ReadUnitProperties("../conf/Resources/UnitsProperties.txt", properties) == 0 ||
+		m_reader->ReadUnit("../conf/Resources/Attack.txt", attackUnits) == 0 ||
+		m_reader->ReadUnit("../conf/Resources/Defence.txt", defendUnits) == 0)
 	{
 		rc = false;
 	}
@@ -53,6 +78,7 @@ int CGameAdmin::LoadGameConfigurations()
 	cout << "---START LOAD UNITS---" << endl;
 
 	LoadUnitProperties(properties);
+
 	/** @note In the given partial implementation, every turn, the properties pointer is passed. 
 	 * Another way to pass properties to pawns:
 	 * * Properties cant change once they have been loaded, So I could inject them upon units loading time.
@@ -110,7 +136,7 @@ int CGameAdmin::Play()
 {
 	int turnNumber = 0;
 
-	while (IsGameOver() != 1)
+	while (IsGameOver() != 1 and turnNumber < MAXIMUM_GAME_LENGTH)
 	{
 		/** @brief Perform actions */
 		for (auto offenceIterator = m_attack->begin(); offenceIterator != m_attack->end(); ++offenceIterator)
@@ -128,6 +154,13 @@ int CGameAdmin::Play()
 		m_defence->remove_if(isAliveHelper);
 
 		cout << "Turn #: " << turnNumber++ << endl;
+	}
+
+	if (!IsGameOver())
+	{
+		std::cout << "\n***************\n\n"
+				  << "\n*************** No one won! ***************\n"
+				  << "\n***************\n\n";
 	}
 
 	return 1;

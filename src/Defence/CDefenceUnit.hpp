@@ -4,18 +4,37 @@
 #include "utils/CLocation.h"
 #include "utils/CConstants.h"
 
+#ifdef UtiliseBonus
 /**
- * @brief 
+ * @brief Defense Targeting dictionary.
+ * 
+ * @note This also implements the bonus!
  * 
  * * Anti-air system  -> Airplane
  * * Anti-tank system -> Tank
  * * Anti-ship system -> Ship
  */
-static std::map<UnitTypes::UnitTypes, UnitTypes::UnitTypes> DefenseDict(
-    {{UnitTypes::UnitTypes::AntiAir, UnitTypes::UnitTypes::Airplane},
-     {UnitTypes::UnitTypes::AntiTank, UnitTypes::UnitTypes::Tank},
-     {UnitTypes::UnitTypes::AntiShip, UnitTypes::UnitTypes::Ship}});
+static std::map<UnitTypes::UnitTypes, std::vector<UnitTypes::UnitTypes>> DefenseDict(
+    {{UnitTypes::UnitTypes::AntiAir, std::vector<UnitTypes::UnitTypes>{UnitTypes::UnitTypes::Airplane}},
+     {UnitTypes::UnitTypes::AntiTank, std::vector<UnitTypes::UnitTypes>{UnitTypes::UnitTypes::Tank}},
+     {UnitTypes::UnitTypes::AntiShip, std::vector<UnitTypes::UnitTypes>{UnitTypes::UnitTypes::Ship}}});
 
+#else
+/**
+ * @brief OffenceDict Targeting dictionary.
+ * 
+ * @note No bonus here
+ * 
+ * Anti-air system  -> Airplane, tank, ship
+ * Anti-tank system -> Airplane, tank, ship
+ * Anti-ship system -> Airplane, tank, ship
+ * 
+ */
+static std::map<UnitTypes::UnitTypes, std::vector<UnitTypes::UnitTypes>> DefenseDict(
+    {{UnitTypes::UnitTypes::AntiAir,  std::vector<UnitTypes::UnitTypes>{UnitTypes::UnitTypes::Airplane, UnitTypes::UnitTypes::Tank, UnitTypes::UnitTypes::Ship}},
+     {UnitTypes::UnitTypes::AntiTank, std::vector<UnitTypes::UnitTypes>{UnitTypes::UnitTypes::Airplane, UnitTypes::UnitTypes::Tank, UnitTypes::UnitTypes::Ship}},
+     {UnitTypes::UnitTypes::AntiShip, std::vector<UnitTypes::UnitTypes>{UnitTypes::UnitTypes::Airplane, UnitTypes::UnitTypes::Tank, UnitTypes::UnitTypes::Ship}}});
+#endif
 class CDefenceUnit : public Unit
 {
 
@@ -48,6 +67,8 @@ public:
 private:
     /**
      * @brief Check if enemy within  range is an enemy I can kill
+     * 
+     * @note This also implements the bonus!
      * 
      * Defenc-system / Enemies relations:
      * * Anti-air system  -> Airplane

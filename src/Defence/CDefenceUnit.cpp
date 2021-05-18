@@ -1,5 +1,8 @@
 #include "CDefenceUnit.hpp"
 
+/**
+ * @note I probably should have moved it up to Unit base class.
+ */
 bool CDefenceUnit::canIDefendFromThisEnemy(UnitTypes::UnitTypes type) const
 {
     auto it = DefenseDict.find(m_unitType);
@@ -10,7 +13,8 @@ bool CDefenceUnit::canIDefendFromThisEnemy(UnitTypes::UnitTypes type) const
         return false;
     }
 
-    if (type == DefenseDict[m_unitType])
+    auto it2 = std::find(it->second.begin(), it->second.end(), type);
+    if (it2 != it->second.end())
     {
         std::cout << "I know this enemy. And I can intercept! returning true\n";
         return true;
@@ -113,9 +117,10 @@ void CDefenceUnit::PerformTurn(std::map<int, CUnitProperty *> *properties)
         }
     }
 
+#ifdef ShowDebugMap
     /** @todo Update debugMap with units current location. */
     m_map->ShowMap();
-
+#endif
     return;
 }
 

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(Game VERSION "0.0.3")
+project(Game VERSION "0.0.5")
 
 set(CMAKE_CXX_STANDARD 14)
 
@@ -29,9 +29,17 @@ message(STATUS "${BoldCyan}Compiling: ${PROJECT_NAME} version: ${PROJECT_VERSION
 
 set(CMAKE_BUILD_TYPE Debug)
 
+## Setting this flag will show a snapshot of the game each turn,
+## Also it'll show tha canning of neighboors for each pawn.
+## Note: 
+## This will slow down the game. 
+## Commenting this line will make the game run faster.
+add_definitions ( -DShowDebugMap )
+
+## Setting this flag will change the pawn targeting system acording to given optional bonus.
+add_definitions ( -DUtiliseBonus )
 
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
-  add_definitions ( -DShowDebugMap )
   message(STATUS "${BoldRed}${PROJECT_NAME} is in Debug, this will reduce effeciency. Continuing.. ${ColourReset}")
 ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)
 
