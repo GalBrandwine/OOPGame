@@ -43,6 +43,7 @@ const void CAuxiliary::GetDirection(const CLocation *currLocation, const CLocati
 	else
 		direction->y = (directionUnitY < -0.5) ? -1 : 0;
 }
+
 /*
 * Calculates attack / defend success according to the unit probability.
 */
@@ -59,7 +60,7 @@ int CAuxiliary::TryHitOpponent(int probability)
 /**
 * Updates unit current location.
 */
-void CAuxiliary::MoveUnit(CLocation *currLocation, CLocation *destLocation, int directionOnX, int directionOnY, int speed)
+void CAuxiliary::MoveUnit(CLocation *currLocation, CLocation *destLocation, int directionOnX, int directionOnY, int speed, int boundaries)
 {
 	while (directionOnY != 0 && (currLocation->Y() != destLocation->Y()) && speed > 0)
 	{
@@ -77,11 +78,11 @@ void CAuxiliary::MoveUnit(CLocation *currLocation, CLocation *destLocation, int 
 	{
 		if (rand() % 100 < 50)
 		{
-			currLocation->SetX(currLocation->X() + speed * (rand() % 10));
+			currLocation->SetX((currLocation->X() + speed * (rand() % 100)) % (boundaries - 1));
 		}
 		else
 		{
-			currLocation->SetY(currLocation->Y() + speed * (rand() % 10));
+			currLocation->SetY((currLocation->Y() + speed * (rand() % 100)) % (boundaries - 1));
 		}
 	}
 }

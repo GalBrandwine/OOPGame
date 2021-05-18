@@ -18,5 +18,5 @@ public:
      * @param properties 
      */
     virtual void PerformTurn(std::map<int, CUnitProperty *> *properties) = 0;
-    virtual ~IUnit(){};
+    // virtual ~IUnit(){};
 };

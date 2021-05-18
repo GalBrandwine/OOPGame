@@ -26,9 +26,21 @@ public:
 	 */
 	const void GetDirection(const CLocation *currLocation, const CLocation *destLocation, Cdirection *direction);
 	static int TryHitOpponent(int probability);
-	static void MoveUnit(CLocation *currLocation, CLocation *destLocation, int directionOnX, int directionOnY, int speed);
+
+	/**
+	 * @brief Move unit inside map parimiters
+	 * 
+	 * @param currLocation 
+	 * @param destLocation 
+	 * @param directionOnX 
+	 * @param directionOnY 
+	 * @param speed 
+	 * @param boundaries 
+	 */
+	static void MoveUnit(CLocation *currLocation, CLocation *destLocation, int directionOnX, int directionOnY, int speed, int boundaries);
 
 private:
 	CAuxiliary();
+	~CAuxiliary() { delete m_instance; };
 	static CAuxiliary *m_instance;
 };

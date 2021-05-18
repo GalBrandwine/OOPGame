@@ -1,5 +1,31 @@
 #include "COffenceUnit.hpp"
 
+/**
+ * @note I probably should have moved it up to Unit base class.
+ */
+bool COffenceUnit::canIAttackThisEnemy(UnitTypes::UnitTypes type) const
+{
+    auto it = OffenceDict.find(m_unitType);
+    if (it == OffenceDict.end())
+    {
+        std::cerr << "This enemy is not in the defend list. I dont know this enemy!\n"
+                  << "Cant intercept.\n";
+        return false;
+    }
+
+    auto it2 = std::find(it->second.begin(), it->second.end(), type);
+    if (it2 != it->second.end())
+    {
+        std::cout << "I know this enemy. And I can intercept! returning true\n";
+        return true;
+    }
+    else
+    {
+        std::cout << "I know this enemy. BUT I cant intercept! returning false\n";
+        return false;
+    }
+}
+
 void COffenceUnit::PerformTurn(std::map<int, CUnitProperty *> *properties)
 {
     if (!m_isAlive)
@@ -59,6 +85,9 @@ void COffenceUnit::PerformTurn(std::map<int, CUnitProperty *> *properties)
         for (const auto &thetha_neighboor : m_neighboors)
         {
             auto type = (thetha_neighboor.second)->GetType();
+            if (!canIAttackThisEnemy(type))
+                return;
+
             auto attack = m_aux->TryHitOpponent(my_properties->GetProbability());
             if (attack == 1)
             {
@@ -104,12 +133,13 @@ void COffenceUnit::PerformTurn(std::map<int, CUnitProperty *> *properties)
         m_aux->GetDirection(&m_startLocation, &m_targetLocation, &m_targetDirection);
         std::cout << "With step [" << m_targetDirection.x << "," << m_targetDirection.y << "]\n";
 
-        m_aux->MoveUnit(&m_startLocation, &m_targetLocation, m_targetDirection.x, m_targetDirection.y, my_properties->GetSpeed());
+        m_aux->MoveUnit(&m_startLocation, &m_targetLocation, m_targetDirection.x, m_targetDirection.y, my_properties->GetSpeed(), MAP_SIZE);
     }
 
+#ifdef ShowDebugMap
     /** @todo Update debugMap with units current location. */
     m_map->ShowMap();
-
+#endif
     return;
 }
 
