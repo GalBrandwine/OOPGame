@@ -19,12 +19,12 @@ Hence the following instructions:
 
  ```shell
  # Compile
- cd ~/<path-to-project>/Game
+ cd ~/<path-to-project>/
  mkdir build && cd build
  cmake .. && make -j
 
 # Run the executable
-~/<path-to-project>/Game/Game
+~/<path-to-project>/build/Game
  ```
 
 ## Using Doxygen (Recommended)
@@ -32,7 +32,7 @@ Hence the following instructions:
 Assuming *Doxygen* installed.
 
 1. ```shell
-   cd ~/<path-to-project>/Game/docs
+   cd ~/<path-to-project>/docs
    export PATH_TO_GAME=<path-to-project> && doxygen Game # Example: export PATH_TO_GAME=/home/gal/dev/ && doxygen Game
    ```
 
